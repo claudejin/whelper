@@ -1,0 +1,4 @@
+extensions: ["jpg", "jpeg", "png", "gif", "psd"]
+save_directory: "/Users/itsme/Downloads/wconcept"
+delete_previous_images: true
+delete_previous_items: 30
