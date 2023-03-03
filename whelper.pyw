@@ -8,7 +8,7 @@ import os
 import glob
 import yaml
 
-version = "0.5"
+version = "0.6"
 config_path = os.path.expanduser("~/wconfig.txt")
 
 if __name__ == "__main__":
@@ -60,6 +60,9 @@ if __name__ == "__main__":
             for img in images:
                 imgurl = img['src'].split('?')[0]
                 print(f"    {i:02d}: {imgurl}")
+                if imgurl[:2] == "//":
+                    imgurl = f"https:{imgurl}"
+                    print(f"      => Adding https: in the front")
 
                 try:
                     open_and_save(imgurl, f"{save_directory}/{i}")
