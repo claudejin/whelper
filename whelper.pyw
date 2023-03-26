@@ -74,6 +74,7 @@ if __name__ == "__main__":
                     open_and_save(imgurl, f"{save_directory}/{i}")
 
                 i += 1
+            print(f"    DONE")
         else:
             print("    Error: Wrong product URL")
         
