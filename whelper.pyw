@@ -7,11 +7,30 @@ import shutil # save img locally
 import os
 import glob
 import yaml
+import semver
 
-version = "0.6.0"
+version = "0.6.2"
 config_path = os.path.expanduser("~/wconfig.txt")
+initial_message = ""
 
 if __name__ == "__main__":
+    vinfo = "https://raw.githubusercontent.com/claudejin/whelper/main/updatelist.txt"
+    f = requests.get(vinfo)
+    lines = f.text.splitlines()
+    latest = lines[0]
+
+    print("Current version:", version, "Latest version:", latest)
+    if semver.compare(version, latest) < 0:
+        # update
+        for filename in lines[1:]:
+            new_file = f"https://raw.githubusercontent.com/claudejin/whelper/main/{filename}"
+            res = requests.get(new_file)
+            if res.status_code == 200:
+                with open(f"{filename}",'w', encoding="utf8") as f:
+                    f.write(res.text)
+        
+        initial_message = f"버전 {latest}로 업데이트 되었습니다. 다시 시작하세요!"
+
     with open(config_path, "r", encoding="utf8") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
     save_directory = config["save_directory"]
@@ -27,6 +46,7 @@ if __name__ == "__main__":
     url=Entry(window)
     url.pack(fill='x')
     url.focus()
+    url.insert(0, initial_message)
 
     def open_and_save(imgurl, savepath):
         ext = imgurl.split('.')[-1]
