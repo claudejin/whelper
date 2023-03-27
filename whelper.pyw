@@ -8,7 +8,7 @@ import os
 import glob
 import yaml
 
-version = "0.6"
+version = "0.6.0"
 config_path = os.path.expanduser("~/wconfig.txt")
 
 if __name__ == "__main__":
