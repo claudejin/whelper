@@ -19,13 +19,13 @@ initial_message = ""
 def check_new_version():
     # Check latest version
     vinfo = "https://raw.githubusercontent.com/claudejin/whelper/main/updatelist.txt"
-    f = requests.get(vinfo)
+    f = requests.get(vinfo, headers={'Cache-Control': 'no-cache'})
     lines = f.text.splitlines()
     latest_version = lines[0]
 
     # Compare versions
     print("Current version:", version, "Latest version:", latest_version)
-    if semver.compare(version, latest_version) >= 0: return
+    if semver.compare(version, latest_version) >= 0: return (False, latest_version)
     
     # Download updated files
     for filename in lines[1:]:
@@ -35,7 +35,7 @@ def check_new_version():
             with open(f"{filename}",'w', encoding="utf8") as f:
                 f.write(res.text)
     
-    initial_message = f"최신 버전 {latest_version}로 업데이트 되었습니다. 다시 시작하세요!"
+    return (True, latest_version)
 
 def open_and_save(imgurl, savepath):
     ext = imgurl.split('.')[-1]
@@ -110,7 +110,7 @@ def download_images(*args):
         url.delete(0, 'end')
         url.insert(0, "Error: Wrong product URL")
 
-def main():
+def main(updated):
     # TODO: config 파일이 존재하지 않을 경우, 서버에서 디폴트 파일 가져오도록 구현
     with open(config_path, "r", encoding="utf8") as f:
         config = yaml.load(f, Loader=yaml.FullLoader)
@@ -126,9 +126,11 @@ def main():
     url=Entry(window)
     url.pack(fill='x')
     url.focus()
-    url.insert(0, initial_message)
-    
-    if initial_message == "":
+
+    if updated[0]:
+        initial_message = f"최신 버전 {updated[1]}로 업데이트 되었습니다. 다시 시작하세요!"
+        url.insert(0, initial_message)
+    else:
         button=Button(window, text="download", command=partial(download_images, config, url))
         button.pack()
         url.bind("<Return>", partial(download_images, config, url))
@@ -136,5 +138,4 @@ def main():
     window.mainloop()
 
 if __name__ == "__main__":
-    check_new_version()
-    main()
+    main(check_new_version())

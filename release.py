@@ -1,4 +1,6 @@
-RELEASE_VERSION = "0.7.4"
+from os import system
+
+RELEASE_VERSION = "0.7.5"
 UPDATE_FILELIST = ["whelper.pyw", "info.py"]
 
 if __name__ == "__main__":
@@ -7,5 +9,9 @@ if __name__ == "__main__":
 
     with open("info.py", "w") as f:
         f.write(f"version = \"{RELEASE_VERSION}\"")
+
+    system("git add --all")
+    system(f"git commit -m v{RELEASE_VERSION}")
+    system("git push")
     
     print(f"Release {RELEASE_VERSION} done!")
