@@ -70,7 +70,7 @@ def get_image_list(url_string):
     return images
 
 def download_images(*args):
-    config, url = args
+    config, url = args[0], args[1]
     save_directory = config["save_directory"]
 
     # Delete previous images
