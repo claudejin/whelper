@@ -9,9 +9,9 @@ import os
 import glob
 import yaml
 import semver
+from info import version
 
 ################################################################################
-version = "0.7.0"
 config_path = os.path.expanduser("~/wconfig.txt")
 initial_message = ""
 ################################################################################
@@ -128,9 +128,10 @@ def main():
     url.focus()
     url.insert(0, initial_message)
     
-    button=Button(window, text="download", command=partial(download_images, config, url))
-    button.pack()
-    url.bind("<Return>", partial(download_images, config, url))
+    if initial_message == "":
+        button=Button(window, text="download", command=partial(download_images, config, url))
+        button.pack()
+        url.bind("<Return>", partial(download_images, config, url))
 
     window.mainloop()
 
