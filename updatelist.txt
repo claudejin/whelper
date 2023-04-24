@@ -1,3 +1,6 @@
-0.7.7
+0.7.8
 whelper.pyw
-info.py
+core/__init__.py
+core/_installer.py
+core/_window.py
+resources/config.yaml
