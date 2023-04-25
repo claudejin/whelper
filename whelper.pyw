@@ -32,7 +32,7 @@ def check_new_version():
         new_file = f"https://raw.githubusercontent.com/claudejin/whelper/main/{filename}"
         res = requests.get(new_file, headers={'Cache-Control': 'no-cache'})
         if res.status_code == 200:
-            os.mkdirs(os.path.dirname(new_file), exist_ok=True)
+            os.makedirs(os.path.dirname(new_file), exist_ok=True)
             with open(f"{filename}",'w', encoding="utf8") as f:
                 f.write(res.text)
     
