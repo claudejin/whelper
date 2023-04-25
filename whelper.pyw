@@ -1,17 +1,19 @@
 #!/usr/local/bin/python3
 
-import core
-from core import InstallManager
+from core import Config, InstallManager, get_window
 
 def main():
-    install_manager = InstallManager()
-    install_manager.migrate()
-    
-    if install_manager.check_new_version():
-        install_manager.update()
+    config = Config()
 
-    main_window = core.get_window()
-    main_window.run(install_manager.config_data)
+    install_manager = InstallManager()
+    install_manager.migrate_if_possible()
+    
+    res, response = install_manager.check_new_version(config["version"])
+    if res:
+        install_manager.update(config, response)
+
+    main_window = get_window()
+    main_window.run(config)
 
 if __name__ == "__main__":
     main()

@@ -1,7 +1,8 @@
-from ._installer import InstallManager
+from .__installer import InstallManager
+from .__config import Config
 
 
 def get_window():
-    from ._window import MainWindow
+    from .__window import MainWindow
 
     return MainWindow()
