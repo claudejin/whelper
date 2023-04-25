@@ -1,6 +1,6 @@
 from os import system
 
-RELEASE_VERSION = "0.7.8"
+RELEASE_VERSION = "0.7.9"
 UPDATE_FILELIST = ["whelper.pyw", "info.py"]
 
 if __name__ == "__main__":
