@@ -13,9 +13,9 @@ class InstallManager:
         if exists(info_py_path):
             remove(info_py_path)
 
-        whelper_py_path = f"{home_path}/whelper.pyw"
-        if exists(whelper_py_path):
-            remove(whelper_py_path)
+        # whelper_py_path = f"{home_path}/whelper.pyw"
+        # if exists(whelper_py_path):
+        #     remove(whelper_py_path)
 
         pycache_path = f"{home_path}/__pycache__"
         if exists(pycache_path):
