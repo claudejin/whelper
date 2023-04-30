@@ -1,5 +1,5 @@
 import threading
-
+from tkinter import Event
 
 class BackgroundTask:
     def __init__(self, taskFuncPointer):
@@ -26,7 +26,7 @@ class BackgroundTask:
         def __init__(self, bgTask, args):
             threading.Thread.__init__(self)
             self.__bgTask_ = bgTask
-            self.__args_ = args
+            self.__args_ = [x for x in args if not isinstance(x, Event)]
 
         def run(self):
             try:
