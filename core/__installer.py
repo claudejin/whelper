@@ -3,6 +3,7 @@ from os import remove, makedirs
 from shutil import rmtree, copyfileobj
 from os.path import exists, expanduser, normpath, dirname
 import requests
+import pip
 
 
 class InstallManager:
@@ -48,6 +49,10 @@ class InstallManager:
         print(response)
         # Download updated files
         for filename in response[1:]:
+            if filename[:3] == "pip":
+                pip.main(["install", filename.split()[1]])
+                continue
+
             new_file = (
                 f"https://raw.githubusercontent.com/claudejin/whelper/main/{filename}"
             )
