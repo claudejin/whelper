@@ -5,6 +5,7 @@ import requests  # request img from web
 import shutil  # save img locally
 import os
 import glob
+from core.components import AnimatedGif, BackgroundTask
 
 
 class MainWindow:
@@ -23,13 +24,22 @@ class MainWindow:
         url.pack(fill="x", padx=16, pady=8)
         url.focus()
 
+        bgtask = BackgroundTask(self.download_images)
+
         button = Button(
             window,
             text="Download",
-            command=partial(self.download_images, url),
+            command=partial(bgtask.start, url),
         )
         button.pack()
-        url.bind("<Return>", partial(self.download_images, url))
+        url.bind("<Return>", partial(bgtask.start, url))
+
+        self.animation = AnimatedGif(
+            window, "/Users/minah/whelper/resources/small_globe.gif"
+        )
+        self.animation.pack()
+        # Button(window, text="start animation", command=self.animation.enable_animation).pack()
+        # Button(window, text="stop animation", command=self.animation.cancel_animation).pack()
 
         window.mainloop()
 
@@ -71,42 +81,62 @@ class MainWindow:
         images = [img for img in marketing_images if img not in pdt_images]
         return images
 
-    def download_images(self, *args):
-        url = args[0]
-
-        # Delete previous images
+    def remove_previous_images(self):
+        # Remove previous images
         if self.config["delete_previous_images"]:
             for i in range(self.config["delete_previous_items"] + 1):
                 for e in self.config["extensions"]:
                     for p in glob.glob(f"{self.config['save_directory']}/{i}.{e}"):
                         os.remove(p)
 
-        print(f"## DOWNLOAD from: {url.get()}")
+    def download_images(self, is_running_func, *args):
+        self.animation.enable_animation()
 
-        # Download
-        images = self.get_image_list(url.get())
-        if len(images) > 0:
-            i = 1
-            for img in images:
-                imgurl = img["src"].split("?")[0]
-                print(f"    {i:02d}: {imgurl}")
-                if imgurl[:2] == "//":
-                    imgurl = f"https:{imgurl}"
-                    print(f"      => Adding https: in the front")
+        try:
+            url = args[0]
 
-                try:
-                    self.open_and_save(imgurl, f"{self.config['save_directory']}/{i}")
-                except requests.exceptions.SSLError:
-                    print("      => Error: requests SSL, trying http instead")
-                    imgurl = imgurl.replace("https://", "http://")
-                    print(f"      => {i:02d}: {imgurl}")
+            self.remove_previous_images()
 
-                    self.open_and_save(imgurl, f"{self.config['save_directory']}/{i}")
+            url_string = url.get().strip()
+            if not url_string:
+                print("## Invalid url")
+                self.animation.cancel_animation()
+                return
 
-                i += 1
-            print(f"    DONE\n")
-            url.delete(0, "end")
-        else:
-            print("    Error: Wrong product URL\n")
-            url.delete(0, "end")
-            url.insert(0, "Error: Wrong product URL")
+            print(f"## DOWNLOAD from: {url_string}")
+
+            # Download
+            images = self.get_image_list(url_string)
+            if len(images) > 0:
+                i = 1
+                for img in images:
+                    imgurl = img["src"].split("?")[0]
+                    print(f"    {i:02d}: {imgurl}")
+                    if imgurl[:2] == "//":
+                        imgurl = f"https:{imgurl}"
+                        print(f"      => Adding https: in the front")
+
+                    try:
+                        self.open_and_save(
+                            imgurl, f"{self.config['save_directory']}/{i}"
+                        )
+                    except requests.exceptions.SSLError:
+                        print("      => Error: requests SSL, trying http instead")
+                        imgurl = imgurl.replace("https://", "http://")
+                        print(f"      => {i:02d}: {imgurl}")
+
+                        self.open_and_save(
+                            imgurl, f"{self.config['save_directory']}/{i}"
+                        )
+
+                    i += 1
+                print(f"    DONE\n")
+                url.delete(0, "end")
+            else:
+                print("    Error: Wrong product URL\n")
+                url.delete(0, "end")
+                url.insert(0, "Error: Wrong product URL")
+        except Exception as e:
+            print(e)
+        finally:
+            self.animation.cancel_animation()

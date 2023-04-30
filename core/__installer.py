@@ -41,7 +41,7 @@ class InstallManager:
         )
         if semver.compare(current_version, latest_version) >= 0:
             return False, []
-        
+
         return True, lines
 
     def update(self, config, response):
@@ -59,6 +59,7 @@ class InstallManager:
 
         config["version"] = response[0]
         config.save()
+
 
 if __name__ == "__main__":
     print("Wrong access")
