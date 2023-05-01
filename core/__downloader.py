@@ -3,51 +3,7 @@ import glob
 import shutil
 import requests
 from bs4 import BeautifulSoup as bs
-
-
-def open_and_save(imgurl, savepath):
-    ext = imgurl.split(".")[-1]
-    if len(ext) > 4:
-        ext = "jpg"
-
-    img_blob = requests.get(
-        imgurl,
-        stream=True,
-        headers={
-            "User-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36"
-        },
-    )
-    if img_blob.status_code == 200:
-        with open(f"{savepath}.{ext}", "wb") as f:
-            shutil.copyfileobj(img_blob.raw, f)
-    else:
-        print("    Error: Image Couldn't be retrieved")
-
-
-def get_image_list(url_string):
-    res = requests.get(url_string, stream=True)
-    if res.status_code != 200:
-        return []
-
-    # parsing soup object
-    soup = bs(res.text, "html.parser")
-
-    # get images under marketing div
-    marketing_container = soup.find(class_="marketing")
-    if not marketing_container:
-        return []
-    marketing_images = marketing_container.find_all("img")
-
-    # exclude images under about_pdt div
-    pdt_container = soup.find(class_="about_pdt")
-    if pdt_container:
-        pdt_images = pdt_container.find_all("img")
-    else:
-        pdt_images = []
-
-    # final image list
-    images = [img for img in marketing_images if img not in pdt_images]
-    return images
+from .util import get_image_nodes, download_image
 
 
 def remove_previous_images(config):
@@ -71,24 +27,18 @@ def download_images(url_string, config):
         print(f"## DOWNLOAD from: {url_string}")
 
         # Download
-        images = get_image_list(url_string)
+        images = get_image_nodes(url_string, [".marketing"], [".about_pdt"])
         if len(images) > 0:
             i = 1
-            for img in images:
-                imgurl = img["src"].split("?")[0]
-                print(f"    {i:02d}: {imgurl}")
-                if imgurl[:2] == "//":
-                    imgurl = f"https:{imgurl}"
-                    print(f"      => Adding https: in the front")
-
+            for imgurl in images:
                 try:
-                    open_and_save(imgurl, f"{config['save_directory']}/{i}")
+                    download_image(imgurl, f"{config['save_directory']}/{i}")
                 except requests.exceptions.SSLError:
                     print("      => Error: requests SSL, trying http instead")
                     imgurl = imgurl.replace("https://", "http://")
                     print(f"      => {i:02d}: {imgurl}")
 
-                    open_and_save(imgurl, f"{config['save_directory']}/{i}")
+                    download_image(imgurl, f"{config['save_directory']}/{i}")
 
                 i += 1
             print(f"    DONE\n")

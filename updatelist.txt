@@ -5,6 +5,7 @@ core/__config.py
 core/__downloader.py
 core/__installer.py
 core/__window.py
+core/util.py
 core/components/__init__.py
 core/components/__animatedGIF.py
 core/components/__task.py
