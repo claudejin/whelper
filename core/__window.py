@@ -14,7 +14,7 @@ class MainWindow:
         window.resizable(False, False)
 
         self.animation = AnimatedGif(
-            window, "/Users/minah/whelper/resources/spinning_earth.gif"
+            window, f"{config['resources']}/spinning_earth.gif"
         )
         self.animation.grid(row=0, column=0, columnspan=2, pady=16)
 
