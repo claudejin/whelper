@@ -42,7 +42,7 @@ class MainWindow:
         self.message = Label(window, text="", foreground="red")
         self.message.grid(row=3, column=0, columnspan=2, padx=8, sticky="w", pady=4)
 
-        setting_button = Button(window, text="설정")
+        setting_button = Button(window, text="설정", state="disabled")
         setting_button.grid(row=3, column=2, sticky="we", padx=8, pady=4)
 
         window.mainloop()
@@ -50,12 +50,18 @@ class MainWindow:
     def background_task(self, is_running_func):
         self.animation.enable_animation()
 
-        url_string = self.url.get()
-        if download_images(url_string, self.config):
-            self.message.configure(text="성공", foreground="green")
-            self.window.after(3000, partial(self.message.configure, text=""))
-        else:
-            self.message.configure(text="실패", foreground="red")
+        try:
+            url_string = self.url.get()
+            if download_images(url_string, self.config):
+                self.message.configure(text="성공", foreground="green")
+                self.window.after(3000, lambda: self.message.configure(text=""))
+            else:
+                self.message.configure(text="실패", foreground="red")
 
-        self.url.delete(0, "end")
-        self.animation.cancel_animation()
+            self.url.delete(0, "end")
+
+        except Exception as e:
+            self.message.configure(text="에러 발생", foreground="red")
+            print(e)
+        finally:
+            self.animation.cancel_animation()

@@ -35,7 +35,6 @@ class AnimatedGif(Label):
     def enable_animation(self):
         if self.cancel_id is None:  # Animation not started?
             ms_delay = 2000 // len(self._frames)  # Show all frames in 1000 ms.
-            print(ms_delay)
             self.cancel_id = self.master.after(
                 ms_delay, self.update_label_image, ms_delay
             )

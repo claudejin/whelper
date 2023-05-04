@@ -1,6 +1,5 @@
 import os
 import glob
-import shutil
 import requests
 from bs4 import BeautifulSoup as bs
 from .util import get_image_nodes, download_image
@@ -31,6 +30,8 @@ def download_images(url_string, config):
         if len(images) > 0:
             i = 1
             for imgurl in images:
+                print(f"    {i:02d}: {imgurl}")
+
                 try:
                     download_image(imgurl, f"{config['save_directory']}/{i}")
                 except requests.exceptions.SSLError:
@@ -41,10 +42,10 @@ def download_images(url_string, config):
                     download_image(imgurl, f"{config['save_directory']}/{i}")
 
                 i += 1
-            print(f"    DONE\n")
+            print(f"  DONE\n")
             return True
         else:
-            print("    Error: Wrong product URL\n")
+            print("  Error: Wrong product URL\n")
             return False
     except Exception as e:
         print(e)
