@@ -1,7 +1,13 @@
-0.8.2
+0.8.3
 whelper.pyw
 core/__init__.py
 core/__config.py
+core/__downloader.py
 core/__installer.py
 core/__window.py
+core/util.py
+core/components/__init__.py
+core/components/__animatedGIF.py
+core/components/__task.py
 resources/config.yaml
+resources/spinning_earth.gif
