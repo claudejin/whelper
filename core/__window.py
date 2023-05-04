@@ -13,30 +13,37 @@ class MainWindow:
         window.geometry("510x200")
         window.resizable(False, False)
 
+        window.columnconfigure(0, weight=1)
+        window.columnconfigure(1, weight=10)
+        window.columnconfigure(2, weight=1)
+
         self.animation = AnimatedGif(
             window, f"{config['resources']}/spinning_earth.gif"
         )
-        self.animation.grid(row=0, column=0, columnspan=2, pady=16)
+        self.animation.grid(row=0, column=0, columnspan=3, pady=16)
 
         bgtask = BackgroundTask(self.background_task)
 
-        label = Label(window, text="Product URL")
-        label.grid(row=1, column=0, padx=8)
+        url_label = Label(window, text="Product URL")
+        url_label.grid(row=1, column=0, padx=8)
 
-        self.url = Entry(window, width=42)
-        self.url.grid(row=1, column=1, sticky="e", padx=8)
+        self.url = Entry(window)
+        self.url.grid(row=1, column=1, columnspan=2, sticky="we", padx=8)
         self.url.bind("<Return>", bgtask.start)
         self.url.focus()
 
-        button = Button(
+        download_button = Button(
             window,
             text="다운로드",
             command=bgtask.start,
         )
-        button.grid(row=2, column=0, columnspan=2, sticky="we", padx=8, pady=4)
+        download_button.grid(row=2, column=0, columnspan=3, sticky="we", padx=8, pady=4)
 
         self.message = Label(window, text="", foreground="red")
         self.message.grid(row=3, column=0, columnspan=2, padx=8, sticky="w", pady=4)
+
+        setting_button = Button(window, text="설정")
+        setting_button.grid(row=3, column=2, sticky="we", padx=8, pady=4)
 
         window.mainloop()
 

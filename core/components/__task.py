@@ -1,6 +1,7 @@
 import threading
 from tkinter import Event
 
+
 class BackgroundTask:
     def __init__(self, taskFuncPointer):
         self.__taskFuncPointer_ = taskFuncPointer
