@@ -3,11 +3,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 
 
-def get_image_nodes(url, include_filters=[], exclude_filters=[]):
-    res = requests.get(url, stream=True)
-    if res.status_code != 200:
-        return []
-
+def get_image_nodes(soup: bs, include_filters=[], exclude_filters=[]):
     def apply_filter(soup, filters):
         nodes = []
         for filter in filters:
@@ -25,9 +21,10 @@ def get_image_nodes(url, include_filters=[], exclude_filters=[]):
         return nodes
 
     # parsing soup object
-    soup = bs(res.text, "html.parser")
+
     included_images = apply_filter(soup, include_filters)
     excluded_images = apply_filter(soup, exclude_filters)
+    detect_youtube(soup)
 
     # final image list
     images = [img for img in included_images if img not in excluded_images]
@@ -63,3 +60,17 @@ def download_image(url, savepath):
         shutil.copyfileobj(img_blob.raw, f)
 
     return True
+
+
+def detect_youtube(soup: bs):
+    movies = soup.find_all("iframe")
+    youtube_html = []
+    if movies:
+        for m in movies:
+            if not m.has_attr("src"):
+                continue
+            if "youtube" not in m["src"]:
+                continue
+            youtube_html.append(str(m.parent).replace("\n", ""))
+
+    return youtube_html

@@ -14,19 +14,12 @@ def remove_previous_images(config):
                     os.remove(p)
 
 
-def download_images(url_string, config):
+def download_images(soup: bs, config):
     try:
         remove_previous_images(config)
 
-        url_string = url_string.strip()
-        if not url_string:
-            print("## Invalid url")
-            return False
-
-        print(f"## DOWNLOAD from: {url_string}")
-
         # Download
-        images = get_image_nodes(url_string, [".marketing"], [".about_pdt"])
+        images = get_image_nodes(soup, [".marketing"], [".about_pdt"])
         if len(images) > 0:
             i = 1
             for imgurl in images:
