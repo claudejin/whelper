@@ -1,4 +1,6 @@
-0.8.4
+0.9.0
+pip pillow
+pip numpy
 whelper.pyw
 core/__init__.py
 core/__config.py
