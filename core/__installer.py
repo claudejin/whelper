@@ -3,7 +3,8 @@ from os import remove, makedirs
 from shutil import rmtree, copyfileobj
 from os.path import exists, expanduser, normpath, dirname
 import requests
-import pip
+from sys import executable
+import subprocess as sp
 
 
 class InstallManager:
@@ -50,7 +51,7 @@ class InstallManager:
         # Download updated files
         for filename in response[1:]:
             if filename[:3] == "pip":
-                pip.main(["install", filename.split()[1]])
+                sp.check_call([executable, "-m", "pip", "install", filename.split()[1]])
                 continue
 
             new_file = (
