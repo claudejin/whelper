@@ -1,9 +1,12 @@
 #!/usr/local/bin/python3
 
 from core import Config, InstallManager, get_window
+from sys import argv
+from os.path import dirname
 
 def main():
     config = Config()
+    config["pwd"] = dirname(argv[0])
 
     install_manager = InstallManager()
     install_manager.migrate_if_possible()

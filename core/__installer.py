@@ -65,12 +65,13 @@ class InstallManager:
                 },
             )
             if res.status_code == 200:
-                makedirs(normpath(dirname(filename)), exist_ok=True)
+                save_filename = f"{config['pwd]']}/{filename}"
+                makedirs(normpath(dirname(save_filename)), exist_ok=True)
                 if new_file.split(".")[-1] in ["py", "pyw", "yaml"]:
-                    with open(f"{filename}", "w", encoding="utf8") as f:
+                    with open(save_filename, "w", encoding="utf8") as f:
                         f.write(res.text)
                 else:
-                    with open(f"{filename}", "wb") as f:
+                    with open(save_filename, "wb") as f:
                         copyfileobj(res.raw, f)
 
         config["version"] = response[0]
