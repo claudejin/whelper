@@ -6,5 +6,6 @@ extensions:
 - png
 - gif
 - psd
-save_directory: ~/Desktop/wconcept
+resources: /Users/claude/whelper/resources/
+save_directory: /Users/claude/Desktop/wconcept
 version: 0.9.0
