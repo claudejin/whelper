@@ -12,6 +12,7 @@ class MainWindow:
         self.config = config
 
         self.window = window = Tk()
+        window.iconphoto(True, PhotoImage(file=f"{config['resources']}/student.png"))
         window.title(f"whelper v" + self.config["version"])
         window.geometry("510x200")
         window.resizable(False, False)
@@ -125,7 +126,7 @@ class MainWindow:
                     self.window.geometry("510x200")
 
         except Exception as e:
-            self.message.configure(text="에러 발생", foreground="red")
+            self.message.configure(text="에러 발생: 다운로드", foreground="red")
             print(e)
         finally:
             self.animation.cancel_animation()
@@ -151,7 +152,7 @@ class MainWindow:
                 raise Exception("stack failure")
 
         except Exception as e:
-            self.message.configure(text="에러 발생", foreground="red")
+            self.message.configure(text="에러 발생: 합치기", foreground="red")
             print(e)
         finally:
             self.animation.cancel_animation()
