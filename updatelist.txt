@@ -18,4 +18,4 @@ core/components/__animatedGIF.py
 core/components/__task.py
 resources/config.yaml
 resources/spinning_earth.gif
-resources/student.ico
+resources/student.png
