@@ -2,8 +2,8 @@ import numpy as np
 from PIL import Image
 from os.path import exists
 
-def count_image_cuts(filepath):
-    img = np.array(Image.open(filepath))
+def count_image_cuts(pil_image: Image):
+    img = np.array(pil_image)
     img_height, img_width, _ = img.shape
 
     def is_blank_line(line, color = None):
@@ -56,7 +56,8 @@ def count_image_cuts(filepath):
     if lines and lines[-1][1] == img_height:
         lines = lines[:-1]
 
-    print(f"{filepath}: {len(lines)+1} cuts")
+    print(f"{len(lines)+1} cuts")
+    return (len(lines)+1)
 
 def stack_cuts(start, end, exclude = []):
     stacked = 0

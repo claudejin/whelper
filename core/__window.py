@@ -87,8 +87,9 @@ class MainWindow:
                     self.youtube_frame.grid_forget()
                     self.window.geometry("510x200")
 
-                if download_images(soup, self.config):
-                    self.message.configure(text="성공", foreground="green")
+                images = download_images(soup, self.config)
+                if images:
+                    self.message.configure(text=f"성공: {len(images)}개", foreground="green")
                     self.window.after(3000, lambda: self.message.configure(text=""))
                     self.url.delete(0, "end")
                 else:

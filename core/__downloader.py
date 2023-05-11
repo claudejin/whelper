@@ -19,26 +19,28 @@ def download_images(soup: bs, config):
         remove_previous_images(config)
 
         # Download
-        images = get_image_nodes(soup, [".marketing"], [".about_pdt"])
-        if len(images) > 0:
-            i = 1
-            for imgurl in images:
-                print(f"    {i:02d}: {imgurl}")
-
-                try:
-                    download_image(imgurl, f"{config['save_directory']}/{i}")
-                except requests.exceptions.SSLError:
-                    print("      => Error: requests SSL, trying http instead")
-                    imgurl = imgurl.replace("https://", "http://")
-                    print(f"      => {i:02d}: {imgurl}")
-
-                    download_image(imgurl, f"{config['save_directory']}/{i}")
-
-                i += 1
-            print(f"  DONE\n")
-            return True
-        else:
+        image_urls = get_image_nodes(soup, [".marketing"], [".about_pdt"])
+        if not image_urls:
             print("  Error: Wrong product URL\n")
-            return False
+            return []
+        
+        i = 1
+        images = []
+        for img_url in image_urls:
+            print(f"    {i:02d}: {img_url}")
+
+            try:
+                images.append(download_image(img_url, f"{config['save_directory']}/{i}"))
+            except requests.exceptions.SSLError:
+                print("      => Error: requests SSL, trying http instead")
+                img_url = img_url.replace("https://", "http://")
+                print(f"      => {i:02d}: {img_url}")
+
+                images.append(download_image(img_url, f"{config['save_directory']}/{i}"))
+
+            i += 1
+        print(f"  DONE\n")
+        return [img for img in images if img]
+            
     except Exception as e:
         print(e)

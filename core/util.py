@@ -1,6 +1,7 @@
-import shutil
 import requests
 from bs4 import BeautifulSoup as bs
+from io import BytesIO
+from PIL import Image
 
 
 def get_image_nodes(soup: bs, include_filters=[], exclude_filters=[]):
@@ -54,12 +55,12 @@ def download_image(url, savepath):
 
     if img_blob.status_code != 200:
         print("    Error: Image Couldn't be retrieved")
-        return False
+        return None
+    
+    img = Image.open(BytesIO(img_blob.content))
+    img.save(f"{savepath}.jpg")
 
-    with open(f"{savepath}.{ext}", "wb") as f:
-        shutil.copyfileobj(img_blob.raw, f)
-
-    return True
+    return img
 
 
 def detect_youtube(soup: bs):
