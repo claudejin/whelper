@@ -3,8 +3,8 @@ from tkinter import Event
 
 
 class BackgroundTask:
-    def __init__(self, taskFuncPointer):
-        self.__taskFuncPointer_ = taskFuncPointer
+    def __init__(self):
+        self.__taskFuncPointer_ = None
         self.__workerThread_ = None
         self.__isRunning_ = False
 
@@ -14,8 +14,9 @@ class BackgroundTask:
     def isRunning(self):
         return self.__isRunning_ and self.__workerThread_.isAlive()
 
-    def start(self, *args):
+    def start(self, taskFuncPointer, *args):
         if not self.__isRunning_:
+            self.__taskFuncPointer_ = taskFuncPointer
             self.__isRunning_ = True
             self.__workerThread_ = self.WorkerThread(self, args)
             self.__workerThread_.start()
