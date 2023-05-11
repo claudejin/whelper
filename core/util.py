@@ -1,77 +1,39 @@
-import requests
-from bs4 import BeautifulSoup as bs
-from io import BytesIO
+import numpy as np
 from PIL import Image
 
 
-def get_image_nodes(soup: bs, include_filters=[], exclude_filters=[]):
-    def apply_filter(soup, filters):
-        nodes = []
-        for filter in filters:
-            if filter[0] == ".":
-                container = soup.find(class_=filter[1:])
-            elif filter[0] == "#":
-                container = soup.find(id=filter[1:])
-            else:
-                container = soup.find(filter)
+def stack_cuts(images, start, end, exclude, config):
+    stacked = 0
+    to_stack = []
 
-            if not container:
-                continue
+    def make_stack(images, i):
+        out = Image.fromarray(np.vstack(images))
 
-            nodes += container.find_all("img")
-        return nodes
+        filepath = f"{config['save_directory']}/stacked_{i}.jpg"
+        out.save(filepath)
+        print("saved:", filepath)
 
-    # parsing soup object
+    for i in range(start, end + 1):
+        if i in exclude:
+            continue
 
-    included_images = apply_filter(soup, include_filters)
-    excluded_images = apply_filter(soup, exclude_filters)
-    detect_youtube(soup)
+        if len(to_stack) < 9:
+            img = images[i - 1]  # Image.open(f"{i}.jpg")
+            if len(to_stack) > 0:
+                sw, sh = img.size
+                h, w, c = to_stack[0].shape
+                img = img.resize((w, int(sh * w / sw)))
+            a = np.array(img)
+            to_stack.append(a)
+            print(i, a.shape)
+            h, w, c = to_stack[0].shape
+            white_bar = np.ones((200, w, c), dtype=np.uint8) * 255
+            to_stack.append(white_bar)
 
-    # final image list
-    images = [img for img in included_images if img not in excluded_images]
-    img_urls = []
-    for img in images:
-        img_url = img["src"].split("?")[0]
-        if img_url[:2] == "//":
-            img_url = f"https:{img_url}"
-            print(f"      => Adding https: in the front")
-        img_urls.append(img_url)
+        if len(to_stack) == 10:
+            stacked += 1
+            make_stack(to_stack, stacked)
+            to_stack = []
 
-    return img_urls
-
-
-def download_image(url, savepath):
-    ext = url.split(".")[-1]
-    if len(ext) > 4:
-        ext = "jpg"
-
-    img_blob = requests.get(
-        url,
-        stream=True,
-        headers={
-            "User-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36"
-        },
-    )
-
-    if img_blob.status_code != 200:
-        print("    Error: Image Couldn't be retrieved")
-        return None
-    
-    img = Image.open(BytesIO(img_blob.content))
-    img.save(f"{savepath}.jpg")
-
-    return img
-
-
-def detect_youtube(soup: bs):
-    movies = soup.find_all("iframe")
-    youtube_html = []
-    if movies:
-        for m in movies:
-            if not m.has_attr("src"):
-                continue
-            if "youtube" not in m["src"]:
-                continue
-            youtube_html.append(str(m.parent).replace("\n", ""))
-
-    return youtube_html
+    if len(to_stack) > 0:
+        make_stack(to_stack, stacked + 1)
