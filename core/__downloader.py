@@ -120,6 +120,8 @@ def __download_image(url, savepath):
         return None
 
     img = Image.open(BytesIO(img_blob.content))
+    if img.mode in ("RGBA", "P"):
+        img = img.convert("RGB")
     img.save(f"{savepath}.jpg")
 
     return img
