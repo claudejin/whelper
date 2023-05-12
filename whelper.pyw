@@ -24,7 +24,7 @@ def main():
     
     res, response = install_manager.check_new_version(config["version"])
     if res:
-        install_manager.update(config, response)
+        install_manager.run(config, response)
 
     main_window = get_window()
     main_window.run(config)
