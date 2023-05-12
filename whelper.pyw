@@ -3,8 +3,19 @@
 from core import Config, InstallManager, get_window
 from sys import argv
 from os.path import dirname
+from os import name as platform_name
 
 def main():
+    try:
+        if platform_name == "nt":
+            import ctypes
+            myappid = u'minbeau.tools.whelper' # arbitrary string
+            ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
+    except Exception as e:
+        print(e)
+    finally:
+        pass
+
     config = Config()
     config["pwd"] = dirname(argv[0])
 
