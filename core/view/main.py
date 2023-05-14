@@ -1,9 +1,10 @@
 from tkinter import *
 import requests
 from bs4 import BeautifulSoup as bs
-from core.components import AnimatedGif, BackgroundTask
-from .__downloader import download_images, detect_youtube
-from .util import stack_cuts
+from core.view.components import AnimatedGif
+from core.util.task import BackgroundTask
+from core.util.downloader import download_images, detect_youtube
+from core.util.image import stack_cuts
 from functools import partial
 
 

@@ -7,7 +7,8 @@ from sys import executable
 import subprocess as sp
 
 from tkinter import *
-from core.components import AnimatedGif, BackgroundTask
+from core.view.components import AnimatedGif
+from core.util.task import BackgroundTask
 
 
 class InstallManager:

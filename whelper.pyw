@@ -1,6 +1,8 @@
 #!/usr/local/bin/python3
 
-from core import Config, InstallManager, get_window
+from core.util.config import Config
+from core.controller.installer import InstallManager
+from core.view import get_main_window
 from sys import argv
 from os.path import dirname
 from os import name as platform_name
@@ -26,8 +28,10 @@ def main():
     if res:
         install_manager.run(config, response)
 
-    main_window = get_window()
+    main_window = get_main_window()
     main_window.run(config)
 
 if __name__ == "__main__":
-    main()
+    #main()
+    from core.util.path import clear_pycache
+    clear_pycache()
