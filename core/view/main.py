@@ -1,4 +1,14 @@
-from tkinter import *
+from tkinter import (
+    Tk,
+    PhotoImage,
+    Label,
+    Entry,
+    Button,
+    Frame,
+    Scrollbar,
+    Text,
+    LabelFrame,
+)
 import requests
 from bs4 import BeautifulSoup as bs
 from core.view.components import AnimatedGif
@@ -14,7 +24,7 @@ class MainWindow:
 
         self.window = window = Tk()
         window.iconphoto(True, PhotoImage(file=f"{config['resources']}/student.png"))
-        window.title(f"whelper v" + self.config["version"])
+        window.title("whelper v" + self.config["version"])
         window.geometry("510x200")
         window.resizable(False, False)
 
@@ -144,7 +154,7 @@ class MainWindow:
             stack_cuts(self.images, start, end, exclude, self.config)
 
             if start < end:
-                self.message.configure(text=f"성공: 합치기", foreground="green")
+                self.message.configure(text="성공: 합치기", foreground="green")
                 self.window.after(3000, lambda: self.message.configure(text=""))
                 self.stack_start.delete(0, "end")
                 self.stack_end.delete(0, "end")

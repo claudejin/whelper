@@ -1,5 +1,4 @@
 from tkinter import PhotoImage, TclError, Label
-from PIL import Image
 
 
 class AnimatedGif(Label):

@@ -6,7 +6,7 @@ import requests
 from sys import executable
 import subprocess as sp
 
-from tkinter import *
+from tkinter import Tk, PhotoImage, Label
 from core.view.components import AnimatedGif
 from core.util.task import BackgroundTask
 
@@ -98,7 +98,7 @@ class InstallManager:
 
         self.window = window = Tk()
         window.iconphoto(True, PhotoImage(file=f"{config['resources']}/student.png"))
-        window.title(f"whelper updater to v" + self.config["version"])
+        window.title("whelper updater to v" + self.config["version"])
         window.overrideredirect(True)
 
         window_height = 160
@@ -132,7 +132,7 @@ class InstallManager:
 
         try:
             if self.update(config, response):
-                self.message.configure(text=f"성공: 업데이트", foreground="green")
+                self.message.configure(text="성공: 업데이트", foreground="green")
                 self.window.after(1000, lambda: self.window.destroy())
             else:
                 raise Exception("download failure")

@@ -49,7 +49,7 @@ def download_images(soup: bs, config):
                 )
 
             i += 1
-        print(f"  DONE\n")
+        print("  DONE\n")
         return [img for img in images if img]
 
     except Exception as e:
@@ -96,7 +96,7 @@ def __get_image_nodes(soup: bs, include_filters=[], exclude_filters=[]):
         img_url = img["src"].split("?")[0]
         if img_url[:2] == "//":
             img_url = f"https:{img_url}"
-            print(f"      => Adding https: in the front")
+            print("      => Adding https: in the front")
         img_urls.append(img_url)
 
     return img_urls
