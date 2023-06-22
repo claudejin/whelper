@@ -18,7 +18,7 @@ def stack_cuts(images, start, end, exclude, config):
             continue
 
         if len(to_stack) < 9:
-            img = images[i - 1]  # Image.open(f"{i}.jpg")
+            img = Image.open(f"{config['save_directory']}/{i}.jpg")
             if len(to_stack) > 0:
                 sw, sh = img.size
                 h, w, c = to_stack[0].shape
