@@ -74,7 +74,11 @@ class MainWindow:
             self.stack_frame,
             text="실행",
             command=partial(bgtask.start, self.stack_images),
-        ).grid(row=1, column=2, columnspan=2, sticky="we", padx=8, pady=4)
+        ).grid(row=1, column=2, sticky="we", padx=8, pady=4)
+        self.stack_overwrite = IntVar()
+        Checkbutton(
+            self.stack_frame, text="기존 스택 덮어쓰기", variable=self.stack_overwrite
+        ).grid(row=1, column=3, padx=8, pady=4)
 
         window.mainloop()
 
@@ -117,6 +121,8 @@ class MainWindow:
                     raise Exception("download failure")
 
                 if len(self.images) > 1:
+                    self.stack_overwrite.set(1)
+                    self.stack_set_idx = 0
                     self.stack_frame.grid(
                         row=5, column=0, columnspan=3, sticky="nsew", padx=12, pady=4
                     )
@@ -130,20 +136,30 @@ class MainWindow:
             print(e)
         finally:
             self.animation.cancel_animation()
+            self.url.focus()
 
     def stack_images(self, is_running_func):
         self.animation.enable_animation()
 
         try:
+            if self.stack_overwrite.get() == 1:
+                self.stack_set_idx = 1
+            else:
+                self.stack_set_idx += 1
+
             start = int(self.stack_start.get().strip())
             end = int(self.stack_end.get().strip())
             exclude = [int(i) for i in self.stack_exclude.get().strip().split()]
 
             print(start, end, exclude)
-            stack_cuts(self.images, start, end, exclude, self.config)
+            stack_cuts(
+                self.stack_set_idx, self.images, start, end, exclude, self.config
+            )
 
             if start < end:
-                self.message.configure(text=f"성공: 합치기", foreground="green")
+                self.message.configure(
+                    text=f"성공: 합치기 (stacked_{self.stack_set_idx})", foreground="green"
+                )
                 self.window.after(3000, lambda: self.message.configure(text=""))
                 self.stack_start.delete(0, "end")
                 self.stack_end.delete(0, "end")
@@ -152,7 +168,10 @@ class MainWindow:
                 raise Exception("stack failure")
 
         except Exception as e:
-            self.message.configure(text="에러 발생: 합치기", foreground="red")
+            self.message.configure(
+                text=f"에러 발생: 합치기 (stacked_{self.stack_set_idx})", foreground="red"
+            )
             print(e)
         finally:
             self.animation.cancel_animation()
+            self.url.focus()

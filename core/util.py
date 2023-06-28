@@ -1,15 +1,16 @@
 import numpy as np
 from PIL import Image
+from os.path import exists
 
 
-def stack_cuts(images, start, end, exclude, config):
+def stack_cuts(stack_set_idx, images, start, end, exclude, config):
     stacked = 0
     to_stack = []
 
     def make_stack(images, i):
         out = Image.fromarray(np.vstack(images))
 
-        filepath = f"{config['save_directory']}/stacked_{i}.jpg"
+        filepath = f"{config['save_directory']}/stacked_{stack_set_idx}_{i}.jpg"
         out.save(filepath)
         print("saved:", filepath)
 
@@ -18,7 +19,11 @@ def stack_cuts(images, start, end, exclude, config):
             continue
 
         if len(to_stack) < 9:
-            img = Image.open(f"{config['save_directory']}/{i}.jpg")
+            filepath = f"{config['save_directory']}/{i}.jpg"
+            if not exists(filepath):
+                continue
+
+            img = Image.open(filepath)
             if len(to_stack) > 0:
                 sw, sh = img.size
                 h, w, c = to_stack[0].shape
