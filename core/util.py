@@ -23,7 +23,7 @@ def stack_cuts(stack_set_idx, images, start, end, exclude, config):
             if not exists(filepath):
                 continue
 
-            img = Image.open(filepath)
+            img = Image.open(filepath).convert("RGB")
             if len(to_stack) > 0:
                 sw, sh = img.size
                 h, w, c = to_stack[0].shape
