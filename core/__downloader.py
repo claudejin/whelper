@@ -4,6 +4,7 @@ import requests
 from bs4 import BeautifulSoup as bs
 from io import BytesIO
 from PIL import Image
+import base64
 
 
 def detect_youtube(soup: bs):
@@ -107,19 +108,27 @@ def __download_image(url, savepath):
     if len(ext) > 4:
         ext = "jpg"
 
-    img_blob = requests.get(
-        url,
-        stream=True,
-        headers={
-            "User-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36"
-        },
-    )
+    img = None
+    if url[:22] == "data:image/png;base64,":
+        img = Image.open(BytesIO(base64.b64decode(url[22:])))
+    else:
+        img_blob = requests.get(
+            url,
+            stream=True,
+            headers={
+                "User-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36"
+            },
+        )
 
-    if img_blob.status_code != 200:
-        print("    Error: Image Couldn't be retrieved")
-        return None
+        if img_blob.status_code != 200:
+            print("    Error: Image Couldn't be retrieved")
+            return None
 
-    img = Image.open(BytesIO(img_blob.content))
+        img = Image.open(BytesIO(img_blob.content))
+
+    if not img:
+        raise Exception("__download failure")
+
     if img.mode in ("RGBA", "P"):
         img = img.convert("RGB")
     img.save(f"{savepath}.jpg")
