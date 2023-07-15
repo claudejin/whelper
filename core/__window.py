@@ -10,11 +10,14 @@ from functools import partial
 class MainWindow:
     def run(self, config):
         self.config = config
+        self.default_size = (510, 200)
+        self.additional_size = 160
+        self.additional_cnt = 0
 
         self.window = window = Tk()
         window.iconphoto(True, PhotoImage(file=f"{config['resources']}/student.png"))
         window.title(f"whelper v" + self.config["version"])
-        window.geometry("510x200")
+        window.geometry(f"{self.default_size[0]}x{self.default_size[1]}")
         window.resizable(False, False)
 
         window.columnconfigure(0, weight=1)
@@ -43,6 +46,12 @@ class MainWindow:
         )
         download_button.grid(row=2, column=0, columnspan=3, sticky="we", padx=8, pady=4)
 
+        self.message = Label(window, text="", foreground="red")
+        self.message.grid(row=3, column=0, columnspan=2, padx=8, sticky="w", pady=4)
+
+        setting_button = Button(window, text="설정", state="disabled")
+        setting_button.grid(row=3, column=2, sticky="we", padx=8, pady=4)
+
         self.youtube_frame = Frame(window)
 
         youtube_scroller = Scrollbar(self.youtube_frame)
@@ -50,16 +59,15 @@ class MainWindow:
             self.youtube_frame, yscrollcommand=youtube_scroller.set, height=10
         )
         youtube_scroller.config(command=self.youtube_codes.yview)
-        self.youtube_codes.grid(row=0, column=0, sticky="nsew")
-        youtube_scroller.grid(row=0, column=1, sticky="nsw")
-
-        self.message = Label(window, text="", foreground="red")
-        self.message.grid(row=4, column=0, columnspan=2, padx=8, sticky="w", pady=4)
-
-        setting_button = Button(window, text="설정", state="disabled")
-        setting_button.grid(row=4, column=2, sticky="we", padx=8, pady=4)
+        youtube_scroller.pack(
+            side="right", fill="y"
+        )  # .grid(row=0, column=1, sticky="nse")
+        self.youtube_codes.pack(
+            side="left", fill="both"
+        )  # .grid(row=0, column=0, sticky="nsew")
 
         self.stack_frame = LabelFrame(window, text="합치기")
+        self.stack_frame.columnconfigure(0, weight=1)
 
         Label(self.stack_frame, text="시작").grid(row=0, column=0, padx=4, pady=4)
         self.stack_start = Entry(self.stack_frame)
@@ -87,6 +95,10 @@ class MainWindow:
 
         self.youtube_codes.delete(0.0, "end")
         self.message.configure(text="")
+        self.additional_cnt = 0
+        self.window.geometry(
+            f"{self.default_size[0]}x{self.default_size[1]+self.additional_cnt*self.additional_size}"
+        )
 
         try:
             url_string = self.url.get().strip()
@@ -103,12 +115,14 @@ class MainWindow:
                 if codes:
                     self.youtube_codes.insert(0.0, "\n\n".join(codes))
                     self.youtube_frame.grid(
-                        row=3, column=0, columnspan=3, sticky="nsew", padx=8, pady=4
+                        row=4, column=0, columnspan=3, sticky="nsew", padx=8, pady=4
                     )
-                    self.window.geometry("510x360")
+                    self.additional_cnt += 1
+                    self.window.geometry(
+                        f"{self.default_size[0]}x{self.default_size[1]+self.additional_cnt*self.additional_size}"
+                    )
                 else:
                     self.youtube_frame.grid_forget()
-                    self.window.geometry("510x200")
 
                 self.images = download_images(soup, self.config)
                 if self.images:
@@ -126,11 +140,12 @@ class MainWindow:
                     self.stack_frame.grid(
                         row=5, column=0, columnspan=3, sticky="nsew", padx=12, pady=4
                     )
-                    self.window.geometry("510x360")
+                    self.additional_cnt += 1
+                    self.window.geometry(
+                        f"{self.default_size[0]}x{self.default_size[1]+self.additional_cnt*self.additional_size}"
+                    )
                 else:
                     self.stack_frame.grid_forget()
-                    self.window.geometry("510x200")
-
         except Exception as e:
             self.message.configure(text="에러 발생: 다운로드", foreground="red")
             print(e)

@@ -1,4 +1,4 @@
-0.9.7
+0.9.8
 pip pillow
 pip numpy
 pip pyyaml
