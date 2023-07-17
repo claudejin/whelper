@@ -60,11 +60,17 @@ def download_images(soup: bs, config):
 
 
 def __remove_previous_images(config):
-    # Remove previous images
     if config["delete_previous_images"]:
+        # Remove previous downloaded images
         for i in range(config["delete_previous_items"] + 1):
             for e in config["extensions"]:
                 for p in glob.glob(f"{config['save_directory']}/{i}.{e}"):
+                    os.remove(p)
+        
+        # Remove previous stack images
+        for i in range(config["delete_previous_items"] + 1):
+            for j in range(config["delete_previous_items"] + 1):
+                for p in glob.glob(f"{config['save_directory']}/stacked_{i}_{j}.jpg"):
                     os.remove(p)
 
 
