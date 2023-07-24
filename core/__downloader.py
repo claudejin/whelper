@@ -66,7 +66,7 @@ def __remove_previous_images(config):
             for e in config["extensions"]:
                 for p in glob.glob(f"{config['save_directory']}/{i}.{e}"):
                     os.remove(p)
-        
+
         # Remove previous stack images
         for i in range(config["delete_previous_items"] + 1):
             for j in range(config["delete_previous_items"] + 1):
@@ -115,7 +115,7 @@ def __download_image(url, savepath):
         ext = "jpg"
 
     img = None
-    if url[:22] == "data:image/png;base64,":
+    if url[:22] == "data:image/png;base64," or url[:23] == "data:image/jpeg;base64,":
         img = Image.open(BytesIO(base64.b64decode(url[22:])))
     else:
         img_blob = requests.get(
