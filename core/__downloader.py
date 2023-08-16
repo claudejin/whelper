@@ -34,7 +34,7 @@ def download_images(soup: bs, config):
         i = 1
         images = []
         for img_url in image_urls:
-            print(f"    {i:02d}: {img_url}")
+            print(f"    {i:02d}: \"{img_url}\"")
 
             try:
                 images.append(
@@ -99,7 +99,7 @@ def __get_image_nodes(soup: bs, include_filters=[], exclude_filters=[]):
     images = [img for img in included_images if img not in excluded_images]
     img_urls = []
     for img in images:
-        img_url = img["src"].split("?")[0]
+        img_url = img["src"].strip().split("?")[0]
         if img_url[:2] == "//":
             img_url = f"https:{img_url}"
             print(f"      => Adding https: in the front")
