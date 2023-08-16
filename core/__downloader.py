@@ -54,7 +54,7 @@ def download_images(soup: bs, config):
         return [img for img in images if img]
 
     except Exception as e:
-        print(e)
+        print("Download images", e)
 
     return []
 
@@ -88,11 +88,10 @@ def __get_image_nodes(soup: bs, include_filters=[], exclude_filters=[]):
             if not container:
                 continue
 
-            nodes += container.find_all("img")
+            nodes += container.find_all("img", src=True)
         return nodes
 
     # parsing soup object
-
     included_images = apply_filter(soup, include_filters)
     excluded_images = apply_filter(soup, exclude_filters)
 

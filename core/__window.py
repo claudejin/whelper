@@ -148,7 +148,7 @@ class MainWindow:
                     self.stack_frame.grid_forget()
         except Exception as e:
             self.message.configure(text="에러 발생: 다운로드", foreground="red")
-            print(e)
+            print("Download", repr(e))
         finally:
             self.animation.cancel_animation()
             self.url.focus()
@@ -186,7 +186,7 @@ class MainWindow:
             self.message.configure(
                 text=f"에러 발생: 합치기 (stacked_{self.stack_set_idx})", foreground="red"
             )
-            print(e)
+            print("Stack images", repr(e))
         finally:
             self.animation.cancel_animation()
             self.url.focus()
