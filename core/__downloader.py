@@ -5,6 +5,8 @@ from bs4 import BeautifulSoup as bs
 from io import BytesIO
 from PIL import Image
 import base64
+from svglib.svglib import svg2rlg
+from reportlab.graphics import renderPDF, renderPM
 
 
 def detect_youtube(soup: bs):
@@ -34,7 +36,7 @@ def download_images(soup: bs, config):
         i = 1
         images = []
         for img_url in image_urls:
-            print(f"    {i:02d}: \"{img_url}\"")
+            print(f'    {i:02d}: "{img_url}"')
 
             try:
                 images.append(
@@ -129,7 +131,14 @@ def __download_image(url, savepath):
             print("    Error: Image Couldn't be retrieved")
             return None
 
-        img = Image.open(BytesIO(img_blob.content))
+        if ext == "svg":
+            drawing = svg2rlg(BytesIO(img_blob.content))
+            img_data = BytesIO()
+            renderPM.drawToFile(drawing, img_data, fmt="jpg")
+        else:
+            img_data = BytesIO(img_blob.content)
+
+        img = Image.open(img_data)
 
     if not img:
         raise Exception("__download failure")

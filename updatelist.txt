@@ -1,10 +1,14 @@
-0.9.12
+0.9.13
 pip pillow
 pip numpy
 pip pyyaml
 pip requests
 pip beautifulsoup4
 pip semver
+# brew install pkg-config
+# brew install cairo
+pip svglib
+pip rlPyCairo
 whelper.pyw
 core/__init__.py
 core/__config.py

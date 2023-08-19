@@ -55,6 +55,9 @@ class InstallManager:
         try:
             for i, filename in zip(range(len(response) - 1), response[1:]):
                 self.message.configure(text=f"업데이트 중... ({i} /{len(response)-1})")
+                if filename[0] == "#":
+                    continue
+
                 if filename[:3] == "pip":
                     sp.check_call(
                         [executable, "-m", "pip", "install", filename.split()[1]]
