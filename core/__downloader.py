@@ -3,7 +3,7 @@ import glob
 import requests
 from bs4 import BeautifulSoup as bs
 from io import BytesIO
-from PIL import Image
+from PIL import Image, ImageFile
 import base64
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPDF, renderPM
@@ -35,6 +35,9 @@ def download_images(soup: bs, config):
 
         i = 1
         images = []
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+        print(f"Total {len(image_urls)} images to download")
         for img_url in image_urls:
             print(f'    {i:02d}: "{img_url}"')
 
