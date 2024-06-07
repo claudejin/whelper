@@ -39,6 +39,10 @@ def download_images(soup: bs, config):
 
         print(f"Total {len(image_urls)} images to download")
         for img_url in image_urls:
+            if not img_url:
+                print(f'    {i:02d}: "{img_url}" Pass')
+                continue
+
             print(f'    {i:02d}: "{img_url}"')
 
             try:

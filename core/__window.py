@@ -173,7 +173,8 @@ class MainWindow:
 
             if start < end:
                 self.message.configure(
-                    text=f"성공: 합치기 (stacked_{self.stack_set_idx})", foreground="green"
+                    text=f"성공: 합치기 (stacked_{self.stack_set_idx})",
+                    foreground="green",
                 )
                 self.window.after(3000, lambda: self.message.configure(text=""))
                 self.stack_start.delete(0, "end")
@@ -184,7 +185,8 @@ class MainWindow:
 
         except Exception as e:
             self.message.configure(
-                text=f"에러 발생: 합치기 (stacked_{self.stack_set_idx})", foreground="red"
+                text=f"에러 발생: 합치기 (stacked_{self.stack_set_idx})",
+                foreground="red",
             )
             print("Stack images", repr(e))
         finally:
