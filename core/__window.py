@@ -107,7 +107,13 @@ class MainWindow:
                 return False
 
             print(f"## DOWNLOAD from: {url_string}")
-            res = requests.get(url_string, stream=True)
+            res = requests.get(
+                url_string,
+                stream=True,
+                headers={
+                    "User-agent": "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1941.0 Safari/537.36"
+                },
+            )
             if res.status_code == 200:
                 soup = bs(res.text, "html.parser")
 
